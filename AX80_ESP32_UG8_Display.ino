@@ -18,7 +18,7 @@ U8G2_SSD1322_NHD_256X64_F_4W_HW_SPI u8g2(U8G2_R0, OLED_CS, OLED_DC, OLED_RST);
 // Interrupt pins
 const uint8_t INTERRUPT_PINS[8] = {13, 34, 14, 27, 26, 25, 21, 35};
 
-#define LABEL_SET 4
+#define LABEL_SET 0
 
 uint8_t DISPLAY_RANGE0[2] = {1, 7};
 uint8_t DISPLAY_RANGE1[2] = {0, 7};
@@ -41,13 +41,6 @@ Rox74HC165<MUX_TOTAL> mux;
 #define PIN_LOAD 33
 #define PIN_CLK 32
 
-#define SRP_TOTAL 1
-Rox74HC595<SRP_TOTAL> srp;
-
-#define LED_DATA 15
-#define LED_CLK 16
-#define LED_LATCH 17
-
 TaskHandle_t TaskDisplay;
 
 void IRAM_ATTR handleInterrupt0() { interruptTriggered[0] = true; }
@@ -63,7 +56,6 @@ void setup() {
   Serial.begin(115200);
 
   mux.begin(PIN_DATA, PIN_LOAD, PIN_CLK);
-  srp.begin(LED_DATA, LED_LATCH, LED_CLK);
 
   void (*interruptHandlers[8])() = {
     handleInterrupt0, handleInterrupt1, handleInterrupt2, handleInterrupt3,
@@ -101,7 +93,6 @@ void loop() {
       updateDisplay = true;
     }
   }
-  srp.update();
 }
 
 void displayTask(void* parameter) {
